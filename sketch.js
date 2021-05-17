@@ -1,145 +1,92 @@
-const Engine=Matter.Engine;
-const World=Matter.World;
-const Bodies=Matter.Bodies;
+// declaring the variables
+var tom, tom_walking, tom_sit,tom_sprite,jerry_sprite;
+var jerry, jerry_cheese, jerry_tease, jerry_look;
+var bg, bgImage;
 
-var engine;
-var world;
-var star;
-var starGroup;
-var fairy;
 
-var groundImg;
-var fairyImg;
-var starImage;
-var invisiblehand;
-var leftcolem;
-var rightcolem;
-var sound;
+function preload() {
+  // loading the images & animations
+  tom = loadAnimation("cat1.png");
+  tom_walking = loadAnimation("cat2.png", "cat3.png");
+  tom_sit = loadAnimation("cat4.png");
 
-var Play=1;
-var End=0;
-var gamestate=Play;
+  jerry = loadAnimation("mouse1.png");
+  jerry_tease = loadAnimation("mouse2.png", "mouse3.png");
+  jerry_look = loadAnimation("mouse4.png");
 
-function preload(){
-   //preload the images here
-sound=loadSound("JoyMusic.mp3");
-
- groundImg=loadImage("starnight.png");
-
- fairyImg=loadAnimation("fairy1.png","fairy2.png");
-
- starImage=loadImage("star.png");
-
- fairyChange=loadImage("fairy.png");
-
+  bg = loadImage("garden.png");
 
 }
 
 function setup() {
- var canvas = createCanvas(500, 500);
+  //loading the backgroung image
+
+  createCanvas(1000, 800);
+
+  tom_sprite = createSprite(700, 600, 40, 40);
+  tom_sprite.addAnimation("cat",tom);
+  tom_sprite.addAnimation("walking", tom_walking);
+  tom_sprite.addAnimation("sitting", tom_sit);
+
+  tom_sprite.scale = 0.2;
   
- engine=Engine.create();
 
- world=engine.world;
+  jerry_sprite = createSprite(190, 600, 20, 20);
+  jerry_sprite.addAnimation("mouse",jerry);
+  jerry_sprite.addAnimation("teasing", jerry_tease);
+  jerry_sprite.addAnimation("looking", jerry_look);
 
+  jerry_sprite.scale = 0.2;
 
-
- invisiblehand=createSprite(250,330,50,50);
-
- leftcolem=createSprite(0,250,20,500);
-
- rightcolem=createSprite(495,250,20,500);
-
-
- ground=createSprite(250,250,70,70);
- ground.addImage("ground",groundImg);
- ground.scale=0.5
-
-
-
- fairy=createSprite(150,330,70,70);
- fairy.addAnimation("fairy",fairyImg)
- fairy.scale=0.2;
- fairy.setCollider("rectangle",0,0,1000,800)
- fairy.debug=false
-
-
-
- fairy.addImage("fairy2",fairyChange);
-
-
- starspawn();
-
- starGroup = new Group();
-
- sound.play();
 }
 
 function draw() {
+  // garden image of the backgroun
+  // setting the background
+  background(bg);
+
+  //colliding tom and jerry
+  if (tom_sprite.x - jerry_sprite.x < (tom_sprite.width - jerry_sprite.width)/2) {
+
+      tom_sprite.changeAnimation("sitting", tom_sit);
+      tom_sprite.velocityX = 0;
+
+      jerry_sprite.changeAnimation("looking", jerry_look);
+
+  }
  
-  background(200);
-
- Engine.update(engine);
-
- if(gamestate===Play){
-rectMode(CENTER);
+  if(keyDown(LEFT_ARROW)){
+    tom_sprite.velocityX = -4;
+    tom_sprite.changeAnimation("walking", tom_walking);
+    jerry_sprite.changeAnimation("teasing", jerry_tease);
 
 
+  
+    
+    
+  }
 
-starspawn();
-
-invisiblehand.x=fairy.x+100;
-
-rect(star.position.x,star.position.y,20,20);
-
-rect(ground.position.x,ground.position.y,70,70);
-
-rect(fairy.position.x,fairy.position.y,70,50);
-
-
-if(keyDown("right")){
-  fairy.x=fairy.x+6;
- // invisiblehand.x=invisiblehand.x+6;
-}
-
-if(keyDown("left")){
-  fairy.x=fairy.x-6;
-  //invisiblehand.x=invisiblehand.x-6;
-}
-
-fairy.bounceOff(leftcolem);
-fairy.bounceOff(rightcolem);
-
-if(invisiblehand.isTouching(star)){
-  gamestate=End;
-
+  drawSprites();
 }
 
 
 
-}
-
-if(gamestate===End){
-  fairy.changeImage("fairy2");
-  star.velocityY=0;
-
-}
-
-starGroup.add(star);
-
-drawSprites();
-
-}
 
 
+function keyPressed() {
 
-function starspawn(){
+  //make the cat move towards the mouse
 
-if(frameCount%100===0){
-  star=createSprite(Math.round(random(50,450)),0,20,20)
-  star.scale=0.3;
-  star.addImage("star",starImage);
-  star.velocityY=3;
-  star.lifeTime=100;
- }
+  if (keyCode === LEFT_ARROW) {
+    tom_sprite.velocityX = -5;
+
+    tom_sprite.changeAnimtaion("walking", tom_walking);
+    jerry_sprite.changeAnimation("teasing", jerry_tease);
+    
+
+  }
+
+
+
+
 }
